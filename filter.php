@@ -30,6 +30,10 @@ class filter_role extends moodle_text_filter {
             return $text;
         }
 
+        if (strpos($text, 'hideforrole') === false) { // The regex is pretty gnarly so lets try to skip it if possible.
+            return $text;
+        }
+
         $hideforrolesearch = '/<span(\s+role="([a-zA-Z0-9_-]+)"|\s+class="hideforrole"){2}\s*>([\s\S]+?)<\/span>/ims';
         $result = preg_replace_callback($hideforrolesearch, [$this, 'filter_role_hide'], $text);
 
