@@ -9,8 +9,8 @@ Place the files into filter/role and run notifications.
 In order to use the filter use span tags within your content as below:
 
 ```html
-<span role="student" class="hideforrole">Hello non students</span>
-<span role="student" class="showforrole">Hello students</span>
+<span class="hideforrole">Hello non students</span>
+<span class="showforrole">Hello students</span>
 ```
 
-Where "student" is the shortname for any given role
+Where "student" is the shortname for any given role. Note - the filter won't work if any other classes or IDs are set on this element.

@@ -30,15 +30,12 @@ class filter_role extends moodle_text_filter {
             return $text;
         }
 
-        if (strpos($text, 'hideforrole') === false) { // The regex is pretty gnarly so lets try to skip it if possible.
+        if (strpos($text, 'forrole_') === false) { // The regex is pretty gnarly so lets try to skip it if possible.
             return $text;
         }
 
-        $hideforrolesearch = '/<span(\s+role="([a-zA-Z0-9_-]+)"|\s+class="hideforrole"){2}\s*>([\s\S]+?)<\/span>/ims';
-        $result = preg_replace_callback($hideforrolesearch, [$this, 'filter_role_hide'], $text);
-
-        $hideforrolesearch = '/<span(\s+role="([a-zA-Z0-9_-]+)"|\s+class="showforrole"){2}\s*>([\s\S]+?)<\/span>/ims';
-        $result = preg_replace_callback($hideforrolesearch, [$this, 'filter_role_show'], $result);
+        $hideforrolesearch = '/<span\s+class="(hide|show)forrole_([\S]+)"\s*>([\s\S]+?)<\/span>/ims';
+        $result = preg_replace_callback($hideforrolesearch, [$this, 'dofiltering'], $text);
 
         if (is_null($result)) {
             return $text; // Something went wrong when doing regex.
@@ -74,20 +71,13 @@ class filter_role extends moodle_text_filter {
         return in_array($roleshortname, $userrolesshortnames);
     }
 
-    function filter_role_hide($block) {
+    function dofiltering($block) {
         $role = $block[2];
+        $display = $block[1] == 'show';
 
-        if ($this->hasrole($role)) {
+        if ($display && !$this->hasrole($role)) {
             return '';
-        } else {
-            return $block[0];
-        }
-    }
-
-    function filter_role_show($block) {
-        $role = $block[2];
-
-        if (!$this->hasrole($role)) {
+        } else if (!$display && $this->hasrole($role)) {
             return '';
         } else {
             return $block[0];
